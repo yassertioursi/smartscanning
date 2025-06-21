@@ -1,0 +1,5 @@
+<resources>
+    <declare-styleable name="CheckableHelper">
+        <attr name="checked" format="boolean"/>
+    </declare-styleable>
+</resources>

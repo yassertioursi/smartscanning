@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
-
 import com.smartscanner.app.camera.FindDocCornersThread;
 import com.pixelnetica.imagesdk.AutoShotDetector;
 import com.pixelnetica.imagesdk.CutoutAverageF;
@@ -12,10 +11,6 @@ import com.pixelnetica.imagesdk.DocumentCutout;
 import com.pixelnetica.imagesdk.ImageSdkLibrary;
 import com.pixelnetica.imagesdk.ImageWriter;
 import com.pixelnetica.imagesdk.ImageWriterException;
-
-/**
- * Created by Denis on 26.11.2016.
- */
 
 public class AppSdkFactory extends SdkFactory {
 
@@ -25,7 +20,7 @@ public class AppSdkFactory extends SdkFactory {
 
 	@Override
 	public Routine createRoutine() {
-		return new Routine(getLibrary().newProcessingInstance(), new Bundle());
+		return new Routine(getLibrary().newProcessingInstance(), new Bundle(), getApplication());
 	}
 
 	@Override

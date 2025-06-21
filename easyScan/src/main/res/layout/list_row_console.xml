@@ -9,7 +9,7 @@
     android:minHeight="?android:attr/listPreferredItemHeightSmall"
     >
 
-<com.ois.scanning.widget.console.ConsoleTextView
+<com.smartscanner.app.widget.console.ConsoleTextView
     style="@style/CameraConsole"
     android:id="@android:id/text1"
     android:layout_width="wrap_content"

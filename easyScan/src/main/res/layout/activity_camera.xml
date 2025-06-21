@@ -5,11 +5,11 @@
                 android:layout_height="match_parent"
                 android:background="@android:color/black"
                 android:keepScreenOn="true"
-                tools:context="com.ois.scanning.camera.CameraActivity">
+                tools:context="com.smartscanner.app.camera.CameraActivity">
 
     <!-- Main camera viewfinder -->
     <!-- NOTE: Don't set background since Android 25 Nougat -->
-    <com.ois.scanning.camera.CameraView
+    <com.smartscanner.app.camera.CameraView
         android:id="@+id/view_camera"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -19,7 +19,7 @@
        />
 
     <!-- Camera overlay -->
-    <com.ois.scanning.camera.CameraOverlay
+    <com.smartscanner.app.camera.CameraOverlay
         android:id="@+id/view_camera_overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -68,7 +68,7 @@
     </RelativeLayout>
 
     <!-- Message console -->
-    <com.ois.scanning.widget.console.ConsoleView
+    <com.smartscanner.app.widget.console.ConsoleView
         android:id="@+id/camera_console"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -78,7 +78,7 @@
         />
 
     <!-- Flash on/off -->
-    <com.ois.scanning.widget.ImageCheckBox
+    <com.smartscanner.app.widget.ImageCheckBox
         android:id="@+id/check_camera_flash"
         android:layout_width="@dimen/camera_button_width"
         android:layout_height="@dimen/camera_button_height"
@@ -89,7 +89,7 @@
         android:src="@drawable/camera_flash_selector"/>
 
     <!-- Camera shaking overlay. Using non-clickable ImageCheck as background -->
-    <com.ois.scanning.widget.ImageCheckBox
+    <com.smartscanner.app.widget.ImageCheckBox
         android:id="@+id/check_shake_overlay"
         android:layout_width="@dimen/camera_button_width"
         android:layout_height="@dimen/camera_button_height"
@@ -102,7 +102,7 @@
         />
 
     <!-- shake detector on/off -->
-    <com.ois.scanning.widget.ImageCheckBox
+    <com.smartscanner.app.widget.ImageCheckBox
         android:id="@+id/check_camera_stabilizer"
         android:layout_width="@dimen/camera_button_width"
         android:layout_height="@dimen/camera_button_height"
@@ -114,7 +114,7 @@
         />
 
     <!-- batch mode button -->
-    <com.ois.scanning.widget.ImageCheckBox
+    <com.smartscanner.app.widget.ImageCheckBox
         android:id="@+id/check_camera_batch"
         android:layout_width="@dimen/camera_button_width"
         android:layout_height="@dimen/camera_button_height"
@@ -125,7 +125,7 @@
         android:src="@drawable/camera_batch_selector"/>
 
     <!-- Find document corners on/off -->
-    <com.ois.scanning.widget.ImageCheckBox
+    <com.smartscanner.app.widget.ImageCheckBox
         android:id="@+id/check_camera_corners"
         android:layout_width="@dimen/camera_button_width"
         android:layout_height="@dimen/camera_button_height"

@@ -69,10 +69,10 @@
 	    android:layout_width="match_parent"
 	    android:layout_height="0dp"
 	    android:layout_weight="1"
-	    tools:context="com.ois.scanning.MainActivity"
+	    tools:context="com.smartscanner.app.MainActivity"
 	    tools:ignore="MergeRootFrame" >
 
-	    <com.ois.scanning.CropImageView
+	    <com.smartscanner.app.CropImageView
 	        android:contentDescription="@string/hello_world"
 	        android:id="@+id/image_holder"
 	        android:layout_width="match_parent"

@@ -25,10 +25,10 @@ android {
     }
 
     signingConfigs {
-        demo {
-            keyAlias 'com.ois.scanning'
+        releaseKey {
+            keyAlias 'myalias'
             keyPassword '123456'
-            storeFile file("${rootDir}/demo.keystore.jks")
+            storeFile file("${rootDir}/my-release-key.jks")
             storePassword '123456'
         }
     }
@@ -37,7 +37,8 @@ android {
     buildToolsVersion "29.0.3"
 
     defaultConfig {
-        applicationId "com.ois.scanning"
+        applicationId "com.smartscanner.app"
+
         buildConfigField "boolean", "DEVELOP", "false"
         buildConfigField "String", "GIT_HASH", "\"${gitHash}\""
 
@@ -71,12 +72,11 @@ android {
         signed {
             initWith release
             matchingFallbacks = ['release']
-            signingConfig signingConfigs.demo
+            signingConfig signingConfigs.releaseKey
         }
         playstore {
             initWith release
             matchingFallbacks = ['release']
-            // do not set signingConfig = null
         }
     }
 
@@ -105,7 +105,6 @@ android {
                 }
             } catch (IOException e) {
                 println "Cannot read playstore properties"
-                // Do not set signingConfig = null here
             }
         }
     }
@@ -122,18 +121,6 @@ android {
         }
     }
 }
-
-// task checkSigningConfig {
-//     doLast {
-//         android.applicationVariants.all { variant ->
-//             assert variant.signingConfig != null
-//         }
-//     }
-// }
-
-// project.afterEvaluate {
-//     assembleProductPlaystore.dependsOn checkSigningConfig
-// }
 
 repositories {
     google()
@@ -178,5 +165,4 @@ dependencies {
     implementation 'com.google.android.material:material:1.3.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'com.github.medyo:android-about-page:1.2.5'
-
 }

@@ -1,4 +1,4 @@
-package com.ois.scanning;
+package com.smartscanner.app;
 
 import android.content.SharedPreferences;
 import androidx.annotation.NonNull;
