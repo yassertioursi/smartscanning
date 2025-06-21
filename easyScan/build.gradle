@@ -1,0 +1,182 @@
+apply plugin: 'com.android.application'
+
+def getGitHash = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'rev-parse', '--short', 'HEAD'
+        standardOutput = stdout
+        ignoreExitValue = true
+    }
+    return stdout.toString().trim()
+}
+
+android {
+    ndkVersion '21.3.6528147'
+    def gitHash
+    try {
+        gitHash = getGitHash()
+    } catch (Exception w) {
+        gitHash = ""
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    signingConfigs {
+        demo {
+            keyAlias 'com.ois.scanning'
+            keyPassword '123456'
+            storeFile file("${rootDir}/demo.keystore.jks")
+            storePassword '123456'
+        }
+    }
+
+    compileSdkVersion 29
+    buildToolsVersion "29.0.3"
+
+    defaultConfig {
+        applicationId "com.ois.scanning"
+        buildConfigField "boolean", "DEVELOP", "false"
+        buildConfigField "String", "GIT_HASH", "\"${gitHash}\""
+
+        minSdkVersion 21
+        targetSdkVersion 29
+
+        versionCode 1
+        versionName "1.0." + versionCode.toString()
+
+        setProperty("archivesBaseName", "$project.name-v$versionCode-${gitHash}")
+
+        ndk {
+            abiFilters = ['armeabi-v7a', 'arm64-v8a', 'x86_64', 'x86']
+        }
+    }
+
+    buildTypes {
+        debug {
+            debuggable true
+            jniDebuggable true
+            minifyEnabled false
+        }
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            zipAlignEnabled true
+            debuggable false
+            jniDebuggable false
+        }
+        signed {
+            initWith release
+            matchingFallbacks = ['release']
+            signingConfig signingConfigs.demo
+        }
+        playstore {
+            initWith release
+            matchingFallbacks = ['release']
+            // do not set signingConfig = null
+        }
+    }
+
+    flavorDimensions 'stage'
+    productFlavors {
+        develop {
+            dimension 'stage'
+        }
+
+        product {
+            dimension 'stage'
+
+            def keystorePropertiesFile = rootProject.file("${projectDir}/keystore.properties")
+
+            try {
+                keystorePropertiesFile.withInputStream { stream ->
+                    println "Configure signing flavor"
+                    def keystoreProperties = new Properties()
+                    keystoreProperties.load(stream)
+
+                    signingConfig = android.signingConfigs.create("${name}")
+                    signingConfig.keyAlias = keystoreProperties['keyAlias']
+                    signingConfig.keyPassword = keystoreProperties['keyPassword']
+                    signingConfig.storeFile = file(keystoreProperties['storeFile'])
+                    signingConfig.storePassword = keystoreProperties['storePassword']
+                }
+            } catch (IOException e) {
+                println "Cannot read playstore properties"
+                // Do not set signingConfig = null here
+            }
+        }
+    }
+
+    variantFilter { variant ->
+        if (variant.flavors[0].name == 'develop' && variant.buildType.name == 'playstore') {
+            setIgnore(true)
+        }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "${project.name}-${variant.flavorName}-v${variant.versionCode}-${gitHash}.apk"
+        }
+    }
+}
+
+// task checkSigningConfig {
+//     doLast {
+//         android.applicationVariants.all { variant ->
+//             assert variant.signingConfig != null
+//         }
+//     }
+// }
+
+// project.afterEvaluate {
+//     assembleProductPlaystore.dependsOn checkSigningConfig
+// }
+
+repositories {
+    google()
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+    maven {
+        url 'http://repo.pixelnetica.com:8081/artifactory/libs-release'
+        allowInsecureProtocol = true
+    }
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 10, 'minutes'
+
+    if (name.contains('develop')) {
+        resolutionStrategy.dependencySubstitution.all { DependencySubstitution dependency ->
+            if (dependency.requested instanceof ModuleComponentSelector) {
+                ModuleComponentSelector selector = (ModuleComponentSelector) dependency.requested
+                if (selector.group == 'com.pixelnetica.sdk' && selector.module == 'scanning-release') {
+                    def targetProject = findProject(':scanning')
+                    if (targetProject != null) {
+                        println "Substitute module for configuration $name"
+                        dependency.useTarget targetProject
+                    }
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation('com.pixelnetica.sdk:scanning-release:2.3.9') { changing = true }
+
+    developImplementation('androidx.exifinterface:exifinterface:1.3.2')
+
+    implementation "androidx.annotation:annotation:1.1.0"
+    implementation "androidx.appcompat:appcompat:1.2.0"
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'com.google.android.material:material:1.3.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'com.github.medyo:android-about-page:1.2.5'
+
+}
